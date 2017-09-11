@@ -40,7 +40,6 @@ void msg_rcv_user_panel(int msg_queue_id){
 }
 
 int main(void){
-    //msgtyp tem q ser 0 para pegar a proxima msg da fila
 
     pid_t pid;
     if((pid = fork()) < 0){
@@ -65,15 +64,16 @@ int main(void){
         exit(1);
     }
 
-    if(pid == 0){//O código aqui dentro será executado no processo filho
+    if(pid == 0){
 
+        //O código aqui dentro será executado no processo filho
         //impressão das mensagens recebidas da fila
-        sleep(10);
         msg_rcv_user_panel(msg_queue_id);
 
     }
-    else{//O código neste trecho será executado no processo pai
+    else{
 
+        //O código neste trecho será executado no processo pai
         //Interação com o usuário e envio da mensagem para a fila
         msg_snd_user_panel(msg_queue_id);
 
