@@ -27,18 +27,6 @@ void msg_snd_user_panel(int msg_queue_id){
     }
 }
 
-void msg_rcv_user_panel(int msg_queue_id){
-    struct msgbuf user_msg;
-    char* exit_command = "quit";
-    for(;;){
-        if(msgrcv(msg_queue_id, (struct msgbuf*)&user_msg, sizeof(user_msg), 0, 0)==-1)
-            perror("msgrcv");
-        printf("Filho: %s\n", user_msg.text);
-        if(strcmp(user_msg.text, exit_command)==0) return;
-    }
-
-}
-
 int main(void){
 
     pid_t pid;
@@ -68,7 +56,9 @@ int main(void){
 
         //O código aqui dentro será executado no processo filho
         //impressão das mensagens recebidas da fila
-        msg_rcv_user_panel(msg_queue_id);
+        //msg_rcv_user_panel(msg_queue_id);
+        execl("/usr/bin/xterm", "xterm", "./childA", NULL);
+        exit(1);
 
     }
     else{
