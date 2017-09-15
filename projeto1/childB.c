@@ -66,15 +66,16 @@ int main(void){
     int msg_snd;
     struct msgbuf user_msg;
 
-    *shm='/';
+    *shm=1;
 
     while(1){
-        while(*shm=='/'){
-            printf("Esperando\n");
+        while(*shm==1){
+            //printf("Esperando\n");
         }
-        *shm='/';
+        *shm=1;
 
         strcpy(user_msg.text, shm+1);
+        printf("Mensagem lida na memoria compartilhada: %s\n", user_msg.text);
 
         if((msg_snd = msgsnd(msg_queue_id, (struct msgbuf*)&user_msg, sizeof(user_msg), 0))==-1){
             perror("msgrcv");

@@ -98,11 +98,11 @@ int main(void) {
     //msg_rcv_user_panel(msg_queue_id, shm);
     int msg_rcv;
     struct msgbuf user_msg;
-    *shm='/';
+    *shm=1;
 
     while(1){
-        while(*shm=='*'){
-            printf("Esperando\n");
+        while(*shm==0){
+            //printf("Esperando\n");
         }
         if((msg_rcv = msgrcv(msg_queue_id, (struct msgbuf*)&user_msg, sizeof(user_msg), 0, 0))==-1){
             perror("msgrcv");
@@ -111,16 +111,16 @@ int main(void) {
             printf("Mensagem recebida da fila: %s\n", user_msg.text);
         }
 
-        *shm='*';
+        *shm=0;
 
         strcpy(shm+1, user_msg.text);
 
         if(strcmp(user_msg.text, "quit")==0){
             msgctl(msg_queue_id, IPC_RMID, 0);
+            shmctl (shm_id, IPC_RMID, 0);
+
         }
     }
-
-    shmctl (shm_id, IPC_RMID, 0);
     return 0;
 }
 

@@ -60,7 +60,7 @@ int main(void){
         //impressão das mensagens recebidas da fila
         //msg_rcv_user_panel(msg_queue_id);
         fflush(stdin);
-        execlp("gnome-terminal", "gnome-terminal", "-e", "./childA", NULL);
+        execlp("gnome-terminal", "gnome-terminal", "-e", "./cA", NULL);
         exit(1);
 
     }
