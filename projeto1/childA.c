@@ -40,7 +40,7 @@ void msg_rcv_user_panel(int msg_queue_id, char* shm){
             perror("msgrcv");
 
         printf("(Filho) Msg recebida da fila: %s\n", user_msg.text);
-        shm_wrt_usr_msg(shm, user_msg.text);
+        shm_wrt_usr_msg(shm+1, user_msg.text);
         printf("Mensagem escrita na memoria compartilhada\n");
         if(strcmp(user_msg.text, exit_command)==0) return;
     }
@@ -95,8 +95,30 @@ int main(void) {
     /* Write a string to the shared memory segment.  */
     //sprintf (shared_memory, “Hello, world.”);
 
-    msg_rcv_user_panel(msg_queue_id, shm);
+    //msg_rcv_user_panel(msg_queue_id, shm);
+    int msg_rcv;
+    struct msgbuf user_msg;
+    *shm='/';
 
+    while(1){
+        while(*shm=='*'){
+            printf("Esperando\n");
+        }
+        if((msg_rcv = msgrcv(msg_queue_id, (struct msgbuf*)&user_msg, sizeof(user_msg), 0, 0))==-1){
+            perror("msgrcv");
+            exit(1);
+        }else{
+            printf("Mensagem recebida da fila: %s\n", user_msg.text);
+        }
+
+        *shm='*';
+
+        strcpy(shm+1, user_msg.text);
+
+        if(strcmp(user_msg.text, "quit")==0){
+            msgctl(msg_queue_id, IPC_RMID, 0);
+        }
+    }
 
     shmctl (shm_id, IPC_RMID, 0);
     return 0;

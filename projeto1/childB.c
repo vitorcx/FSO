@@ -16,14 +16,6 @@ struct msgbuf{
 };
 
 //Função para receber mensagem do usuário e enviar para fila
-void shm_to_msg_queue(char* shm){
-    int i;
-    //printf("Mensagem lida da shm: ");
-    for(i=0;i<strlen(shm);i++){
-        printf("%c", shm[i]);
-    }
-    shm[i+1]='*';
-}
 
 int main(void){
     //Acesso a fila de mensagem
@@ -71,14 +63,28 @@ int main(void){
         exit(1);
     }
 
-    int shm_msg_size;
-    for(;;){
-        shm_to_msg_queue(shm);
-        shm_msg_size = strlen(shm);
-        if(shm[shm_msg_size]=='*') break;
+    int msg_snd;
+    struct msgbuf user_msg;
+
+    *shm='/';
+
+    while(1){
+        while(*shm=='/'){
+            printf("Esperando\n");
+        }
+        *shm='/';
+
+        strcpy(user_msg.text, shm+1);
+
+        if((msg_snd = msgsnd(msg_queue_id, (struct msgbuf*)&user_msg, sizeof(user_msg), 0))==-1){
+            perror("msgrcv");
+            exit(1);
+        }
+
+        if(strcmp(user_msg.text, "quit")==0){
+            msgctl(msg_queue_id, IPC_RMID, 0);
+        }
     }
-
-
 
     exit(0);
 }
