@@ -1,4 +1,3 @@
-//Duvida: sem chamar msg_rcv_user_panel o outro terminal nao abre
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -24,12 +23,12 @@ void shm_wrt_usr_msg(char* shm, char* msg){
 
 }
 
-int shm_rd(char* shm){//retona 1 se a mensagem foi lida pelo outro processo, 0 se não foi lida
+/*int shm_rd(char* shm){//retona 1 se a mensagem foi lida pelo outro processo, 0 se não foi lida
     int shm_size;
     shm_size = strlen(shm);
     if(shm[shm_size-1]=='*') return 1;
     else return 0;
-}
+}*/
 
 
 void msg_rcv_user_panel(int msg_queue_id, char* shm){
@@ -88,13 +87,6 @@ int main(void) {
     //aponta o ponteiro shm para o endereço da memoria compartilhada
     shm = (char *)shmat(shm_id, 0, 0);
 
-    //Informa o tamanho do segmento de memoria
-    //shmctl(shm_id, IPC_STAT, &shm_buffer);
-    //int seg_size = shm_buffer.shm_segsz;
-    //printf("Tamanho do segmento: %d\n", seg_size);
-    /* Write a string to the shared memory segment.  */
-    //sprintf (shared_memory, “Hello, world.”);
-
     //msg_rcv_user_panel(msg_queue_id, shm);
     int msg_rcv;
     struct msgbuf user_msg;
@@ -123,11 +115,3 @@ int main(void) {
     }
     return 0;
 }
-
-/*char* mem_msg;
-mem_msg = (char *)malloc(strlen(shm)*sizeof(char));
-int i;
-for(i=0; i<strlen(shm); i++)
-    mem_msg[i] = shm[i];
-printf("%s\n", mem_msg);
-Codigo que le da memoria compartilhada*/
